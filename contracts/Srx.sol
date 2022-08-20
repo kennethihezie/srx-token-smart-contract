@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Srx is ERC20 {
     string public _tokenName = "StarrexToken";
-    string public _tokenSymbol = "STX";
+    string public _tokenSymbol = "SRX";
     address public _owner;
 
     constructor(uint256 initialSupply) ERC20(_tokenName, _tokenSymbol){

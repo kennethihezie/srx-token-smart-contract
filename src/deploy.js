@@ -10,6 +10,6 @@ const deploy = async () => {
     console.log('Contracts deployed at: ' + result.options.address);
 }
 
-//deployed at 0x4d0893197C21A49E5A4C4047857f7c376C524e62
+//deployed at 0xE11577d73C10B771D53C64D847f64a345692127d
 
 deploy()
