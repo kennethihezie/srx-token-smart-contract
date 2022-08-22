@@ -15,7 +15,7 @@ task("accounts", "Prints the list of accounts", async (_, { web3 }) => {
  */
 const memonicPhrase = '{REPLACE_WITH_WALLET_PHRASE}'
 const providerUrl = '{REPLACE_WITH_RINKEBY_LINK}'
- 
+
 module.exports = {
   solidity: "0.8.4",
   networks: {
