@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Srx is ERC20 {
@@ -15,24 +15,15 @@ contract Srx is ERC20 {
         _mint(_owner, initialSupply);
     }
 
-    modifier _amountChecker(uint256 amount){
-        // Check if the transaction sender has enough tokens.
-        // If `require`'s first argument evaluates to `false` then the
-        // transaction will revert.
-        require(address(msg.sender).balance > amount);
-        _;
-    }
-
     modifier _restricted() {
         require(msg.sender == _owner);
         _;
     }
 
-    function getOwnerEtherBalance() _restricted public view returns(uint256) {
-       return address(this).balance;
-    }
-
-    function getAddressEtherBalance() public view returns(uint256) {
+   function getEtherBalance() public view returns(uint256) {
+        if(msg.sender == _owner){
+            return address(this).balance;
+        }
         return address(msg.sender).balance;
     }
 
@@ -45,14 +36,6 @@ contract Srx is ERC20 {
         return _airDropAddress;
     }
 
-    //call only by the contract owner
-    function transferTokenFromOwner(address to, uint256 amount) _amountChecker(amount) payable public {
-        //Set the amount of allowance the owner is allowed to transfer from the function caller balance
-        approve(_owner, amount);
-        //calling ERC20 contract transfer method which returns boolean
-        transfer(to, amount);            
-    }
-
     //call by anyone to transfer token
     function transferToken(address to, uint256 amount) public payable {
         //Set the amount of allowance the spender is allowed to transfer from the function caller balance
@@ -62,16 +45,17 @@ contract Srx is ERC20 {
 
     function buyToken(address buyer) public payable {
         //get user amount to buy
-        uint256 amountToBuy = msg.value;
+        uint256 amount = msg.value;
 
         //get the contract srt balance
-        uint256 contractBalance = balanceOf(_owner);
+        uint256 balance = balanceOf(_owner);
 
-        require(amountToBuy > 0, "Amount must be greater than 0");
-        require(amountToBuy < contractBalance, "No srt on the contract");
+        require(amount > 0, "Amount must be greater than 0");
+        require(amount < balance, "No srt on the contract");
 
+        approve(_owner, amount);
         //call the erc20 transfer method
-        transferTokenFromOwner(buyer, amountToBuy);
+        transferFrom(_owner, buyer, amount);
     }
 
      function sellToken(uint256 amount) public payable {
@@ -97,10 +81,11 @@ contract Srx is ERC20 {
         _airDropAddress.push(msg.sender);
     }
 
-    function sendOutTokensForAirDrop() public _restricted payable {
+    function sendOutTokensForAirDrop(uint256 amount) public _restricted payable {
         for (uint256 index = 0; index < _airDropAddress.length; index++) {
+            approve(_owner, amount);
             //send 100 srt to all addresses that joined the air drop
-            transferTokenFromOwner(_airDropAddress[index], 100);
+            transferFrom(_owner, _airDropAddress[index], amount);
         }
 
         //clear out the airDropAddress

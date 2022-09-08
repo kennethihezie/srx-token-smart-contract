@@ -13,12 +13,25 @@ task("accounts", "Prints the list of accounts", async (_, { web3 }) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-const memonicPhrase = '{REPLACE_WITH_WALLET_PHRASE}'
-const providerUrl = '{REPLACE_WITH_RINKEBY_LINK}'
+// const memonicPhrase = '{REPLACE_WITH_WALLET_PHRASE}'
+// const testnetUrl = '{REPLACE_WITH_BSC_LINK}'
+// const mainnetUrl = "{REPLACE_WITH_BSC_LINK}"
 
 module.exports = {
-  solidity: "0.8.4",
+  solidity: "0.8.9",
   networks: {
+    testnet: {
+      url: testnetUrl,
+      chainId: 97,
+      gasPrice: 20000000000,
+      accounts: { mnemonic: memonicPhrase }
+    },
+    mainnet: {
+      url: mainnetUrl,
+      chainId: 56,
+      gasPrice: 20000000000,
+      accounts: {mnemonic: memonicPhrase }
+    },
     bsc_testnet: {
       url: providerUrl,
       accounts: {
