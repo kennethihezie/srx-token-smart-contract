@@ -37,7 +37,7 @@ describe("Token contract", () => {
       //buy token with account[3]
       const initalEthBalance = await tokenContract.methods.getEtherBalance().call({ from: accounts[0] })
       console.log('initalEthBalance ', initalEthBalance);
-      await tokenContract.methods.buyToken(accounts[3]).send({ from: accounts[0], value: web3.utils.toWei('0.0000000000000001', 'ether') })
+      await tokenContract.methods.buyToken().send({ from: accounts[3], value: web3.utils.toWei('0.0000000000000001', 'ether') })
       const balance = await tokenContract.methods.getBalanceOf(accounts[3]).call();
       console.log('buyToken balance', balance);
       const ethBalance = await tokenContract.methods.getEtherBalance().call({ from: accounts[0] })
@@ -46,13 +46,22 @@ describe("Token contract", () => {
 
     it("sellToken", async () =>  {
       await tokenContract.methods.transferToken(accounts[4], '200').send({ from: accounts[0] });
+
       const userEthBal = await tokenContract.methods.getEtherBalance().call({ from: accounts[4] })
       console.log('userEthBal', userEthBal);
-      await tokenContract.methods.sellToken('25').send({ from: accounts[4], value: web3.utils.toWei('1', 'ether') })
+
+      const contractEthBal = await tokenContract.methods.getContractBalance().call({ from: accounts[0] })
+      console.log('contractEthBal', contractEthBal);
+
+      await tokenContract.methods.sellToken('3').send({ from: accounts[4], value: web3.utils.toWei('20', 'wei') })
       const balance = await tokenContract.methods.getBalanceOf(accounts[4]).call();
       console.log('balance ', balance);
+
       const currentEthUserBalance = await tokenContract.methods.getEtherBalance().call({ from: accounts[4] })
       console.log('currentEthUserBalance ', currentEthUserBalance);
+
+      const currentContractEthBal = await tokenContract.methods.getContractBalance().call({ from: accounts[0] })
+      console.log('currentContractEthBal', currentContractEthBal);
     })
 
     it('airdrop', async() => {

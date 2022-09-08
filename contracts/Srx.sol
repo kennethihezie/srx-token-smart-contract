@@ -21,10 +21,11 @@ contract Srx is ERC20 {
     }
 
    function getEtherBalance() public view returns(uint256) {
-        if(msg.sender == _owner){
-            return address(this).balance;
-        }
         return address(msg.sender).balance;
+    }
+
+     function getContractBalance() public view _restricted returns(uint256) {
+        return address(this).balance;
     }
 
      function getBalanceOf(address account) public view returns(uint256) {
@@ -43,7 +44,7 @@ contract Srx is ERC20 {
         transferFrom(msg.sender, to, amount);
     }
 
-    function buyToken(address buyer) public payable {
+    function buyToken() public payable {
         //get user amount to buy
         uint256 amount = msg.value;
 
@@ -53,16 +54,16 @@ contract Srx is ERC20 {
         require(amount > 0, "Amount must be greater than 0");
         require(amount < balance, "No srt on the contract");
 
-        approve(_owner, amount);
+        _approve(_owner, msg.sender, amount);
         //call the erc20 transfer method
-        transferFrom(_owner, buyer, amount);
+        transferFrom(_owner, msg.sender, amount);
     }
 
      function sellToken(uint256 amount) public payable {
        require(amount > 0, "Amount must be greater than 0");
 
-        //for you to sell srt token you will need to to pay .01 ether
-       require(msg.value >= .01 ether, "0.01 ether is required");
+        //for you to sell srt token you will need to to pay 20 wei
+        require(msg.value >= 20 wei, "20 wei is required");
 
        //check if the contract have ether.
        require(address(this).balance > amount, "Insufficent ether");
